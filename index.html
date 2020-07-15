@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <title>CSC 642 Summer 2020 Individual Assigment - Waleed Ghaleb</title>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+              // fungsi initialize untuk mempersiapkan peta
+        function initialize() {
+        var propertiPeta = {
+            center:new google.maps.LatLng(-8.5830695,116.3202515),
+            zoom:9,
+            mapTypeId:google.maps.MapTypeId.ROADMAP
+        };
+        
+        var peta = new google.maps.Map(document.getElementById("map"), propertiPeta);
+
+        var marker=new google.maps.Marker({
+            position: new google.maps.LatLng(-8.5830695,116.3202515),
+            map: peta,
+            animation: google.maps.Animation.BOUNCE
+        });
+
+        function taruhMarker(peta, posisiTitik){
+            // membuat Marker
+            if( marker ){
+              // pindahkan marker
+              marker.setPosition(posisiTitik);
+            } else {
+              // buat marker baru
+              marker = new google.maps.Marker({
+                position: posisiTitik,
+                map: peta
+              });
+            }
+
+            function getAddress (latitude, longitude) {
+              return new Promise(function (resolve, reject) {
+                  var request = new XMLHttpRequest();
+
+                  var method = 'GET';
+                  var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=true';
+                  var async = true;
+
+                  request.open(method, url, async);
+                  request.onreadystatechange = function () {
+                      if (request.readyState == 4) {
+                          if (request.status == 200) {
+                              var data = JSON.parse(request.responseText);
+                              var address = data.results[0];
+                              resolve(address);
+                          }
+                          else {
+                              reject(request.status);
+                          }
+                      }
+                  };
+                  request.send();
+              });
+          };
+
+            getAddress(posisiTitik.lat(), posisiTitik.lng()).then(console.log);
+        }
+
+        google.maps.event.addListener(peta, 'click', function(event) {
+            taruhMarker(this, event.latLng);
+        });
+        }
+
+        // event jendela di-load  
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+
+    <div class="banner">
+      
+      <div class="container">
+        <h2>CSC 642 Summer 2020 Individual Assigment Waleed Ghaleb</h2>
+      </div>
+
+    </div>
+
+      
+      <div class="container">
+        
+        <div class="form-layout">
+          <div class="form-header">
+            <h2 class="form-title">Data Survey Form</h2>
+          </div>
+
+          <div class="form-body">
+            <form id="form" action="validate.html">
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="firstname">
+                    Firstname*
+                  </label>
+                  <input type="text" id="firstname" class="form-control" placeholder="Enter firstname">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="lastname">
+                    Lastname*
+                  </label>
+                  <input type="text" id="lastname" class="form-control" placeholder="Enter lastname">
+                </div>
+              </div>
+
+              <div class="spacer"></div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="address">
+                    Address*
+                  </label>
+
+                  <div id="map"></div>
+
+                  <input type="text" id="address" class="form-control" placeholder="Enter firstname" value="Morrow Country, Oregon, USA">
+                </div>
+              </div>
+
+              <div class="spacer"></div>
+
+              <div class="spacer">
+                <label for="birth">
+                  Birth Date*
+                </label>
+                <input type="date" id="birth" class="form-control" placeholder="DD/MM/YYYY">
+              </div>
+
+              <div class="spacer">
+                <label for="education">
+                  Education Level
+                </label>
+                <select id="education" class="form-control">
+                  <option value="">-choose-</option>
+                  <option>High School</option>
+                  <option>College</option>
+                  <option>Graduate studies</option>
+                  <option>Ph.D</option>
+                </select>
+              </div>
+
+              <div class="spacer">
+                <label for="height">
+                  Height (feet, inches)
+                </label>
+                <input type="number" id="height" class="form-control" placeholder="Enter height">
+              </div>
+
+              <div class="spacer">
+                <label for="phone">
+                  Phone*
+                </label>
+                <input type="number" id="phone" class="form-control" placeholder="Enter phone number">
+              </div>
+
+              <div class="spacer">
+                <label for="email">
+                  Email*
+                </label>
+                <input type="email" id="email" class="form-control" placeholder="Enter email">
+              </div>
+              <div class="left-20 spacer">
+                <input type="checkbox" class="form-check-input" id="terms">
+                <label class="form-check-label" for="terms">I Agree to terms*</label>
+              </div>  
+
+              <div class="g-recaptcha w-100 spacer" data-sitekey="6LedSrEZAAAAAN0OMfgJ2pbE90T7Rb5UPtv6MN23"></div>
+
+              <button class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
